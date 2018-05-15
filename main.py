@@ -1,4 +1,5 @@
 import imageio
+import argparse
 imageio.plugins.ffmpeg.download()
 
 from moviepy.editor import *
@@ -14,16 +15,21 @@ def renderNew(vid_name, output_vid_name):
     final.write_videofile(output_vid_name)
 
 def main():
-    # 4 ^ n  
-    exponent = 10
+
+    parser = argparse.ArgumentParser(description='Renders a grid of the same video')
+    parser.add_argument("--filename", type=str, help="The filename of the mp4", required=True)
+    parser.add_argument("--n", type=int, help="The number of videos we want in the grid where the number is 4^(n+1)", required=True)
+
+    args = parser.parse_args()
+    exponent = args.n
     exp_org = exponent
-    originalVideo = "trump_output.mp4"
-    renderNew(originalVideo, "output{}.mp4".format(str(exp_org - exponent)))
+    originalVideo = args.filename
+    renderNew(originalVideo, "output/output{}.mp4".format(str(exp_org - exponent)))
     while exponent > 0:
         if exponent == 1:
-            renderNew("output{}.mp4".format(str(exp_org - exponent)), "FINALOUTPUT.webm")
+            renderNew("output/output{}.mp4".format(str(exp_org - exponent)), "output/FINALOUTPUT.webm")
         else:
-            renderNew("output{}.mp4".format(str(exp_org - exponent)), "output{}.mp4".format(str(exp_org - exponent + 1)))
+            renderNew("output/output{}.mp4".format(str(exp_org - exponent)), "output/output{}.mp4".format(str(exp_org - exponent + 1)))
         exponent = exponent - 1
 
 
